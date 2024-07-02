@@ -1,0 +1,201 @@
+basePath: /
+definitions:
+  controllers.AuthResponse:
+    properties:
+      message:
+        type: string
+      token:
+        type: string
+    type: object
+  controllers.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  controllers.LoginInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  controllers.RegisterInput:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: 'JWT Authorization header using the Bearer scheme. Example: "Bearer
+    {token}"'
+  title: Excel Data API
+  version: "1.0"
+paths:
+  /data/{field}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve paginated data from a specified field in the Excel sheet.
+      parameters:
+      - description: Name of the field to retrieve
+        enum:
+        - PartnerId
+        - PartnerName
+        - CustomerId
+        - CustomerName
+        - CustomerDomainName
+        - CustomerCountry
+        - MpnId
+        - Tier2MpnId
+        - InvoiceNumber
+        - ProductId
+        - SkuId
+        - AvailabilityId
+        - SkuName
+        - ProductName
+        - PublisherName
+        - PublisherId
+        - SubscriptionDescription
+        - SubscriptionId
+        - ChargeStartDate
+        - ChargeEndDate
+        - UsageDate
+        - MeterType
+        - MeterCategory
+        - MeterId
+        - MeterSubCategory
+        - MeterName
+        - MeterRegion
+        - Unit
+        - ResourceLocation
+        - ConsumedService
+        - ResourceGroup
+        - ResourceURI
+        - ChargeType
+        - UnitPrice
+        - Quantity
+        - UnitType
+        - BillingPreTaxTotal
+        - BillingCurrency
+        - PricingPreTaxTotal
+        - PricingCurrency
+        - ServiceInfo1
+        - ServiceInfo2
+        - Tags
+        - AdditionalInfo
+        - EffectiveUnitPrice
+        - PCToBCExchangeRate
+        - PCToBCExchangeRateDate
+        - EntitlementId
+        - EntitlementDescription
+        - PartnerEarnedCreditPercentage
+        - CreditPercentage
+        - CreditType
+        - BenefitOrderId
+        - BenefitId
+        - BenefitType
+        in: path
+        name: field
+        required: true
+        type: string
+      - default: 1
+        description: Page number
+        in: query
+        name: page
+        type: integer
+      - default: 10
+        description: Results per page
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful retrieval of field data
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid page or limit number
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Field not found or error in processing request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      security:
+      - bearerAuth: []
+      summary: Get data by field
+      tags:
+      - data
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Log in a user and return a JWT token
+      parameters:
+      - description: Login
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.LoginInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Log in a user
+      tags:
+      - auth
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with username and password
+      parameters:
+      - description: Register
+        in: body
+        name: register
+        required: true
+        schema:
+          $ref: '#/definitions/controllers.RegisterInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.AuthResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/controllers.ErrorResponse'
+      summary: Register a new user
+      tags:
+      - auth
+swagger: "2.0"
